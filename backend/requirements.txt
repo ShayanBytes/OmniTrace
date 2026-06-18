@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+gitpython
+lizard
+requests
+pydantic

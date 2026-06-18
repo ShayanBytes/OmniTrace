@@ -1,0 +1,43 @@
+# ===========================================================================
+#  Code Archaeologist — .gitignore
+#  Covers the Python backend and the Node/Vite frontend.
+# ===========================================================================
+
+# --- Python ----------------------------------------------------------------
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Node / Vite (frontend) ------------------------------------------------
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Secrets / local config ------------------------------------------------
+# AI keys are entered in the UI and never committed, but ignore env files
+# just in case anyone adds one.
+.env
+.env.*
+!.env.example
+
+# --- Editors / OS ----------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
