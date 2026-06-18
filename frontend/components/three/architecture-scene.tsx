@@ -32,12 +32,29 @@ function modulesFor(layerIndex: number, width: number) {
   return out;
 }
 
+// Pre-flatten module cubes into a stable, indexed list so refs don't shift.
+const MODULES = LAYERS.flatMap((layer, li) =>
+  modulesFor(li, layer.w).map(([x, z], mi) => ({ x, z, y: layer.y, color: layer.color, key: `${li}-${mi}` }))
+);
+
 function Strata() {
   const group = React.useRef<THREE.Group>(null);
+  const cubes = React.useRef<(THREE.Mesh | null)[]>([]);
+
   useFrame((state, delta) => {
     if (group.current) {
       group.current.rotation.y += delta * 0.15;
     }
+    // Module cubes gently bob and pulse, each on its own phase, so the map
+    // reads as a living system rather than a frozen diagram.
+    const t = state.clock.elapsedTime;
+    cubes.current.forEach((m, i) => {
+      if (!m) return;
+      m.position.y = MODULES[i].y + 0.18 + Math.sin(t * 1.6 + i) * 0.05;
+      m.rotation.y = t * 0.4 + i;
+      (m.material as THREE.MeshStandardMaterial).emissiveIntensity =
+        0.6 + (Math.sin(t * 2 + i * 1.3) * 0.5 + 0.5) * 0.9;
+    });
   });
 
   return (
@@ -63,19 +80,27 @@ function Strata() {
             />
             <lineBasicMaterial color={layer.color} transparent opacity={0.5} />
           </lineSegments>
-          {/* Module cubes */}
-          {modulesFor(li, layer.w).map(([x, z], mi) => (
-            <mesh key={mi} position={[x, 0.18, z]}>
-              <boxGeometry args={[0.26, 0.26, 0.26]} />
-              <meshStandardMaterial
-                color="#e9ddff"
-                emissive={layer.color}
-                emissiveIntensity={0.6}
-                toneMapped={false}
-              />
-            </mesh>
-          ))}
         </group>
+      ))}
+
+      {/* Module cubes — flattened with stable indexed refs so each bobs/pulses
+          on its own phase. Positioned in world space at their layer's height. */}
+      {MODULES.map((m, i) => (
+        <mesh
+          key={m.key}
+          position={[m.x, m.y + 0.18, m.z]}
+          ref={(el) => {
+            cubes.current[i] = el;
+          }}
+        >
+          <boxGeometry args={[0.26, 0.26, 0.26]} />
+          <meshStandardMaterial
+            color="#e9ddff"
+            emissive={m.color}
+            emissiveIntensity={0.6}
+            toneMapped={false}
+          />
+        </mesh>
       ))}
     </group>
   );

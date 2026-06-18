@@ -2,6 +2,10 @@ import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
+import { AuroraBg } from "@/components/shared/aurora-bg";
+import { CursorGlow } from "@/components/shared/cursor-glow";
+import { MotionProvider } from "@/components/shared/motion-provider";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -66,7 +70,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark ${inter.variable} ${mono.variable}`}>
       <body className="min-h-screen font-sans">
-        {children}
+        {/* Living ambient layers behind everything. */}
+        <AuroraBg />
+        <CursorGlow />
+        <MotionProvider>{children}</MotionProvider>
         {/* Fixed decorative layers: film grain + edge vignette for depth.
             High z but pointer-events-none, so they sit over all content
             without ever intercepting clicks. */}

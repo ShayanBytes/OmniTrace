@@ -52,7 +52,7 @@ export function TechnicalArchitecture() {
         {LAYERS.map((layer, i) => (
           <Reveal key={layer.title} delay={i * 0.08}>
             <div
-              className={`relative rounded-2xl border ${layer.accent} p-5 backdrop-blur`}
+              className={`group relative rounded-2xl border ${layer.accent} p-5 backdrop-blur transition-transform duration-300 hover:-translate-y-0.5 hover:scale-[1.01]`}
             >
               <div className="flex items-center gap-4">
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-black/40 ring-1 ring-white/10">
@@ -82,7 +82,7 @@ export function TechnicalArchitecture() {
             </div>
             {i < LAYERS.length - 1 && (
               <div className="flex justify-center py-0.5">
-                <ArrowDown className="h-4 w-4 text-slate-600" />
+                <ArrowDown className="h-4 w-4 animate-bounce text-excav-violet/60" />
               </div>
             )}
           </Reveal>

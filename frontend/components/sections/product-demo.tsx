@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CodeWindow } from "@/components/shared/code-window";
 import { RiskBadge } from "@/components/shared/risk-badge";
+import { Sparkline } from "@/components/shared/charts/sparkline";
+import { WordStream } from "@/components/shared/word-stream";
 import { DEMO_PHASES } from "@/lib/demo-script";
 import { DEMO_GRAVEYARD, demoReport } from "@/lib/mock-data";
 import { riskLevel, splitPath } from "@/lib/risk";
@@ -92,19 +94,40 @@ export function ProductDemo() {
               <motion.div
                 initial={reduce ? false : { opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                className="mt-4 grid grid-cols-4 gap-2 overflow-hidden"
+                className="mt-4 overflow-hidden"
               >
-                {[
-                  ["14,238", "commits"],
-                  ["2,167", "files"],
-                  ["63", "authors"],
-                  ["12", "abandoned"],
-                ].map(([v, l]) => (
-                  <div key={l} className="rounded-lg bg-white/[0.03] p-2.5 text-center ring-1 ring-white/5">
-                    <div className="font-display text-base text-slate-100">{v}</div>
-                    <div className="text-[10px] uppercase tracking-wide text-slate-500">{l}</div>
-                  </div>
-                ))}
+                <div className="grid grid-cols-4 gap-2">
+                  {[
+                    ["14,238", "commits"],
+                    ["2,167", "files"],
+                    ["63", "authors"],
+                    ["12", "abandoned"],
+                  ].map(([v, l], i) => (
+                    <motion.div
+                      key={l}
+                      initial={reduce ? false : { opacity: 0, y: 8, scale: 0.9 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ delay: reduce ? 0 : 0.1 + i * 0.08, type: "spring", stiffness: 320, damping: 22 }}
+                      className="rounded-lg bg-white/[0.03] p-2.5 text-center ring-1 ring-white/5"
+                    >
+                      <div className="font-display text-base text-slate-100">{v}</div>
+                      <div className="text-[10px] uppercase tracking-wide text-slate-500">{l}</div>
+                    </motion.div>
+                  ))}
+                </div>
+                {/* Commit-activity trend that draws in under the stats. */}
+                <div className="mt-2 flex items-center gap-3 rounded-lg bg-white/[0.02] px-3 py-2 ring-1 ring-white/5">
+                  <span className="text-[10px] uppercase tracking-wide text-slate-500">
+                    commit activity
+                  </span>
+                  <Sparkline
+                    data={[3, 6, 4, 9, 7, 12, 8, 14, 10, 16, 9, 5]}
+                    width={180}
+                    height={32}
+                    stroke="#8c45ff"
+                    className="ml-auto"
+                  />
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -122,21 +145,30 @@ export function ProductDemo() {
                   const { name } = splitPath(f.path);
                   const risk = riskLevel(f);
                   return (
-                    <div
+                    <motion.div
                       key={f.path}
+                      initial={reduce ? false : { opacity: 0, x: -12 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: reduce ? 0 : i * 0.1, ease: [0.22, 1, 0.36, 1] }}
                       className={cn(
                         "flex items-center gap-3 px-3 py-2.5 text-xs transition-colors",
                         i !== 3 && "border-b border-white/5",
                         isTarget && step >= 3
-                          ? "bg-excav-violet/15"
+                          ? "bg-excav-violet/15 ring-1 ring-inset ring-excav-violet/40"
                           : "bg-black/20"
                       )}
                     >
-                      <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", risk.dot)} />
+                      <span
+                        className={cn(
+                          "h-1.5 w-1.5 shrink-0 rounded-full",
+                          risk.dot,
+                          isTarget && step >= 3 && !reduce && "animate-ping"
+                        )}
+                      />
                       <span className="flex-1 truncate font-mono text-slate-200">{name}</span>
                       <span className="hidden text-slate-500 sm:inline">{f.days_idle}d idle</span>
                       <RiskBadge file={f} />
-                    </div>
+                    </motion.div>
                   );
                 })}
               </motion.div>
@@ -155,9 +187,12 @@ export function ProductDemo() {
                   <Sparkles className="h-3.5 w-3.5" />
                   Archaeology Report · {splitPath(TARGET.path).name}
                 </div>
-                <p className="text-xs leading-relaxed text-slate-300">
-                  {REPORT.report.replace(/\*\*/g, "")}
-                </p>
+                <WordStream
+                  text={REPORT.report.replace(/\*\*/g, "")}
+                  active={showReport}
+                  speed={24}
+                  className="text-xs leading-relaxed text-slate-300"
+                />
               </motion.div>
             )}
           </AnimatePresence>

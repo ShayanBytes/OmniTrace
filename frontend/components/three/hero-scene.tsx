@@ -50,14 +50,61 @@ const EDGES: [THREE.Vector3, THREE.Vector3][] = (() => {
   return edges;
 })();
 
+// A few packets that travel along the web's edges, fading at each end.
+const HERO_PACKET_EDGES = EDGES.filter((_, i) => i % 3 === 0);
+
+function Packets() {
+  const refs = React.useRef<(THREE.Mesh | null)[]>([]);
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    HERO_PACKET_EDGES.forEach(([a, b], i) => {
+      const m = refs.current[i];
+      if (!m) return;
+      const frac = (t * 0.3 + i * 0.29) % 1;
+      m.position.lerpVectors(a, b, frac);
+      (m.material as THREE.MeshStandardMaterial).opacity = Math.sin(frac * Math.PI);
+    });
+  });
+  return (
+    <>
+      {HERO_PACKET_EDGES.map((_, i) => (
+        <mesh key={i} ref={(el) => { refs.current[i] = el; }}>
+          <sphereGeometry args={[0.035, 8, 8]} />
+          <meshStandardMaterial
+            color="#43e7ff"
+            emissive="#43e7ff"
+            emissiveIntensity={3}
+            transparent
+            toneMapped={false}
+          />
+        </mesh>
+      ))}
+    </>
+  );
+}
+
 function Constellation() {
   const group = React.useRef<THREE.Group>(null);
+  const nodeRefs = React.useRef<(THREE.Mesh | null)[]>([]);
+  const start = React.useRef<number | null>(null);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     if (group.current) {
       group.current.rotation.y += delta * 0.12;
       group.current.rotation.x += delta * 0.02;
     }
+    if (start.current === null) start.current = state.clock.elapsedTime;
+    const t = state.clock.elapsedTime - start.current;
+    NODES.forEach((_, i) => {
+      const m = nodeRefs.current[i];
+      if (!m) return;
+      const appear = Math.min(1, Math.max(0, (t - i * 0.03) * 3));
+      m.scale.setScalar(appear === 1 ? 1 : 1 - Math.pow(1 - appear, 3));
+      if (i % 4 === 0) {
+        (m.material as THREE.MeshStandardMaterial).emissiveIntensity =
+          1.4 + Math.sin(state.clock.elapsedTime * 2.4 + i) * 0.6;
+      }
+    });
   });
 
   return (
@@ -82,7 +129,7 @@ function Constellation() {
 
       {/* Nodes */}
       {NODES.map((p, i) => (
-        <mesh key={i} position={p}>
+        <mesh key={i} position={p} ref={(el) => { nodeRefs.current[i] = el; }} scale={0}>
           <sphereGeometry args={[i % 4 === 0 ? 0.1 : 0.06, 16, 16]} />
           <meshStandardMaterial
             color={i % 4 === 0 ? "#43e7ff" : "#b372cf"}
@@ -92,6 +139,8 @@ function Constellation() {
           />
         </mesh>
       ))}
+
+      <Packets />
     </group>
   );
 }

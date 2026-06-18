@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/shared/reveal";
+import { AnimatedText } from "@/components/shared/animated-text";
 
 type SectionHeadingProps = {
   eyebrow?: string;
@@ -33,7 +34,16 @@ export function SectionHeading({
           {eyebrow}
         </span>
       )}
-      <h2 className="font-display text-h2 text-gradient">{title}</h2>
+      {typeof title === "string" ? (
+        <AnimatedText
+          as="h2"
+          text={title}
+          className="font-display text-h2"
+          wordClassName="text-gradient"
+        />
+      ) : (
+        <h2 className="font-display text-h2 text-gradient">{title}</h2>
+      )}
       {description && (
         <p
           className={cn(

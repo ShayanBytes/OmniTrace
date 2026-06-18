@@ -114,6 +114,31 @@ const config: Config = {
         shimmer: { "100%": { transform: "translateX(100%)" } },
         spinSlow: { to: { transform: "rotate(360deg)" } },
         marquee: { to: { transform: "translateX(-50%)" } },
+        // Slow-roaming aurora blobs for the ambient background layer.
+        aurora: {
+          "0%": { transform: "translate3d(-8%, -4%, 0) scale(1)" },
+          "33%": { transform: "translate3d(6%, 8%, 0) scale(1.15)" },
+          "66%": { transform: "translate3d(10%, -6%, 0) scale(0.95)" },
+          "100%": { transform: "translate3d(-8%, -4%, 0) scale(1)" },
+        },
+        // Expanding ring pulse (status dots, node halos).
+        "pulse-ring": {
+          "0%": { transform: "scale(0.8)", opacity: "0.7" },
+          "70%, 100%": { transform: "scale(2.4)", opacity: "0" },
+        },
+        // Flowing dashed connector lines (offset the stroke dash).
+        dash: { to: { strokeDashoffset: "-100" } },
+        // Twinkling particle / star.
+        twinkle: {
+          "0%, 100%": { opacity: "0.2", transform: "scale(0.8)" },
+          "50%": { opacity: "1", transform: "scale(1.15)" },
+        },
+        // A light beam sweeping across a surface.
+        beam: {
+          "0%": { transform: "translateX(-120%) skewX(-12deg)", opacity: "0" },
+          "40%, 60%": { opacity: "0.5" },
+          "100%": { transform: "translateX(220%) skewX(-12deg)", opacity: "0" },
+        },
         "gradient-pan": {
           "0%, 100%": { backgroundPosition: "0% 50%" },
           "50%": { backgroundPosition: "100% 50%" },
@@ -137,6 +162,12 @@ const config: Config = {
         "spin-slow": "spinSlow 60s linear infinite",
         marquee: "marquee 40s linear infinite",
         "gradient-pan": "gradient-pan 8s ease infinite",
+        aurora: "aurora 24s ease-in-out infinite",
+        "aurora-slow": "aurora 38s ease-in-out infinite",
+        "pulse-ring": "pulse-ring 2.4s cubic-bezier(0.22,1,0.36,1) infinite",
+        dash: "dash 1.2s linear infinite",
+        twinkle: "twinkle 3.5s ease-in-out infinite",
+        beam: "beam 3.2s ease-in-out infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },

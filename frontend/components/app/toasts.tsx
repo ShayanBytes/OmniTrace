@@ -53,12 +53,19 @@ export function Toasts({
             <motion.div
               key={t.id}
               layout
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 40 }}
+              initial={{ opacity: 0, x: 60, scale: 0.9 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 60, scale: 0.9 }}
+              transition={{ type: "spring", stiffness: 400, damping: 28 }}
               className={`glass pointer-events-auto flex items-center gap-2.5 rounded-xl px-4 py-3 text-sm text-slate-100 ring-1 ${TONES[t.tone]}`}
             >
-              <Icon className="h-4 w-4 shrink-0" />
+              <motion.span
+                initial={{ scale: 0, rotate: -30 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.1, type: "spring", stiffness: 500, damping: 18 }}
+              >
+                <Icon className="h-4 w-4 shrink-0" />
+              </motion.span>
               <span>{t.message}</span>
               <button
                 onClick={() => onDismiss(t.id)}

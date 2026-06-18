@@ -6,7 +6,9 @@ import { Reveal } from "@/components/shared/reveal";
 import { GlowOrb } from "@/components/shared/glow-orb";
 import { AnimatedCounter } from "@/components/shared/animated-counter";
 import { FileCard } from "@/components/shared/file-card";
+import { BarMeter } from "@/components/shared/charts/bar-meter";
 import { DEMO_OVERVIEW, DEMO_GRAVEYARD } from "@/lib/mock-data";
+import { riskLevel } from "@/lib/risk";
 
 const STATS = [
   { icon: GitCommitHorizontal, label: "Commits analyzed", value: DEMO_OVERVIEW.total_commits },
@@ -18,6 +20,20 @@ const STATS = [
 export function RepositoryIntelligence() {
   // Top 4 highest-risk artifacts for the preview row.
   const preview = DEMO_GRAVEYARD.slice(0, 4);
+
+  // Risk distribution across the full demo graveyard, for the animated meter.
+  const riskCounts = DEMO_GRAVEYARD.reduce(
+    (acc, f) => {
+      acc[riskLevel(f).key] += 1;
+      return acc;
+    },
+    { high: 0, medium: 0, low: 0 } as Record<"high" | "medium" | "low", number>
+  );
+  const riskBars = [
+    { label: "High risk", value: riskCounts.high, color: "bg-gradient-to-r from-rose-500 to-orange-500" },
+    { label: "Watch", value: riskCounts.medium, color: "bg-gradient-to-r from-amber-400 to-yellow-500" },
+    { label: "Stable", value: riskCounts.low, color: "bg-gradient-to-r from-emerald-400 to-cyan-500" },
+  ];
 
   return (
     <SectionShell
@@ -45,6 +61,20 @@ export function RepositoryIntelligence() {
           </Reveal>
         ))}
       </div>
+
+      <Reveal delay={0.1} className="mt-8">
+        <div className="glass rounded-2xl p-5 sm:p-6">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-300">
+              Risk distribution
+            </h3>
+            <span className="text-[11px] text-slate-500">
+              across {DEMO_GRAVEYARD.length} abandoned files
+            </span>
+          </div>
+          <BarMeter data={riskBars} />
+        </div>
+      </Reveal>
 
       <div className="mt-14">
         <Reveal className="mb-4 flex items-center gap-3">

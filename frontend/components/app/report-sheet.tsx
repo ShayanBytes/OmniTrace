@@ -1,10 +1,12 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import { Loader2, Sparkles, Copy, Check, AlertTriangle } from "lucide-react";
 
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { WordStream } from "@/components/shared/word-stream";
 import { splitPath } from "@/lib/risk";
 import type { GraveyardFile } from "@/lib/mock-data";
 
@@ -89,9 +91,11 @@ export function ReportSheet({
                     )}
                   </Button>
                 </div>
-                <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-200">
-                  {state.report.replace(/\*\*/g, "")}
-                </p>
+                <WordStream
+                  text={state.report.replace(/\*\*/g, "")}
+                  speed={18}
+                  className="whitespace-pre-wrap text-sm leading-relaxed text-slate-200"
+                />
               </div>
             )}
 
@@ -102,12 +106,15 @@ export function ReportSheet({
                 </h3>
                 <ul className="flex flex-col gap-1.5">
                   {state.commit_messages.map((m, i) => (
-                    <li
+                    <motion.li
                       key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.05 + i * 0.05 }}
                       className="rounded-lg bg-black/30 px-3 py-2 font-mono text-xs text-slate-300 ring-1 ring-white/5"
                     >
                       {m}
-                    </li>
+                    </motion.li>
                   ))}
                 </ul>
               </div>

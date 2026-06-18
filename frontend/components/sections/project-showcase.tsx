@@ -4,6 +4,7 @@ import { SectionShell } from "@/components/shared/section-shell";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { Reveal } from "@/components/shared/reveal";
 import { GlowOrb } from "@/components/shared/glow-orb";
+import { SpotlightCard } from "@/components/shared/spotlight-card";
 
 const PROJECTS = [
   {
@@ -56,11 +57,11 @@ export function ProjectShowcase() {
       <div className="mt-12 grid gap-5 lg:grid-cols-3">
         {PROJECTS.map((p, i) => (
           <Reveal key={p.name} delay={i * 0.08}>
-            <div className="glass group h-full rounded-2xl p-6 transition-shadow hover:shadow-card">
+            <SpotlightCard className="glass group h-full rounded-2xl p-6 transition-shadow hover:shadow-card">
               <div className="flex items-center justify-between">
                 <span className="font-mono text-sm text-slate-100">{p.name}</span>
                 <span className="flex items-center gap-1.5 text-[11px] text-slate-400">
-                  <span className={`h-2 w-2 rounded-full ${p.langColor}`} />
+                  <span className={`h-2 w-2 rounded-full ${p.langColor} ${"animate-pulse"}`} />
                   {p.lang}
                 </span>
               </div>
@@ -69,14 +70,14 @@ export function ProjectShowcase() {
                 {p.note}
               </p>
               <div className="mt-5 flex items-center gap-4 border-t border-white/10 pt-4 text-xs text-slate-500">
-                <span className="flex items-center gap-1.5">
+                <span className="flex items-center gap-1.5 transition-colors group-hover:text-amber-300">
                   <Star className="h-3.5 w-3.5" /> {p.stars}
                 </span>
-                <span className="flex items-center gap-1.5">
+                <span className="flex items-center gap-1.5 transition-colors group-hover:text-slate-300">
                   <GitFork className="h-3.5 w-3.5" /> {p.forks}
                 </span>
               </div>
-            </div>
+            </SpotlightCard>
           </Reveal>
         ))}
       </div>

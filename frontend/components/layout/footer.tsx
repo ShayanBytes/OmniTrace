@@ -1,6 +1,7 @@
 import { Github, Twitter } from "lucide-react";
 
 import { Logo } from "@/components/shared/logo";
+import { Reveal } from "@/components/shared/reveal";
 
 const COLUMNS = [
   {
@@ -21,7 +22,7 @@ export function Footer() {
   return (
     <footer className="relative border-t border-white/10 px-6 py-14">
       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
-        <div className="flex flex-col gap-4">
+        <Reveal className="flex flex-col gap-4">
           <Logo />
           <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
             Local-first code archaeology. Understand any repository — your code
@@ -31,36 +32,36 @@ export function Footer() {
             <a
               href="#"
               aria-label="GitHub"
-              className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 text-slate-400 transition hover:border-white/25 hover:text-white"
+              className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 text-slate-400 transition-all duration-300 hover:-translate-y-0.5 hover:scale-110 hover:border-white/25 hover:text-white"
             >
               <Github className="h-4 w-4" />
             </a>
             <a
               href="#"
               aria-label="X / Twitter"
-              className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 text-slate-400 transition hover:border-white/25 hover:text-white"
+              className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 text-slate-400 transition-all duration-300 hover:-translate-y-0.5 hover:scale-110 hover:border-white/25 hover:text-white"
             >
               <Twitter className="h-4 w-4" />
             </a>
           </div>
-        </div>
+        </Reveal>
 
-        {COLUMNS.map((col) => (
-          <div key={col.title} className="flex flex-col gap-3">
+        {COLUMNS.map((col, ci) => (
+          <Reveal key={col.title} delay={0.05 + ci * 0.06} className="flex flex-col gap-3">
             <h3 className="text-sm font-semibold text-slate-200">{col.title}</h3>
             <ul className="flex flex-col gap-2">
               {col.links.map((link) => (
                 <li key={link}>
                   <a
                     href="#"
-                    className="text-sm text-muted-foreground transition hover:text-white"
+                    className="inline-block text-sm text-muted-foreground transition-all duration-200 hover:translate-x-1 hover:text-white"
                   >
                     {link}
                   </a>
                 </li>
               ))}
             </ul>
-          </div>
+          </Reveal>
         ))}
       </div>
 

@@ -13,8 +13,8 @@ export function Logo({
   showWord?: boolean;
 }) {
   return (
-    <span className={cn("flex items-center gap-2.5", className)}>
-      <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-excav-violet to-excav-violetDeep shadow-glow ring-1 ring-white/15">
+    <span className={cn("group/logo flex items-center gap-2.5", className)}>
+      <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-excav-violet to-excav-violetDeep shadow-glow ring-1 ring-white/15 transition-transform duration-300 group-hover/logo:scale-110 group-hover/logo:rotate-3">
         <svg
           width="20"
           height="20"

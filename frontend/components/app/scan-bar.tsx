@@ -30,8 +30,14 @@ export function ScanBar({
   const provider = PROVIDERS[settings.provider];
 
   return (
-    <div className="glass rounded-2xl p-3 shadow-glow sm:p-4">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+    <div className="glass relative overflow-hidden rounded-2xl p-3 shadow-glow sm:p-4">
+      {/* Scanning beam — a light sweep across the bar while a scan runs. */}
+      {scanning && (
+        <span className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
+          <span className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-excav-violet/20 to-transparent animate-beam" />
+        </span>
+      )}
+      <div className="relative flex flex-col gap-3 lg:flex-row lg:items-center">
         <div className="relative flex-1">
           <FolderGit2 className="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-excav-lilac/70" />
           <input

@@ -4,7 +4,7 @@ type GlowOrbProps = {
   className?: string;
   /** Tailwind color utility, e.g. "bg-excav-violet/25". */
   color?: string;
-  animate?: "float" | "drift" | "none";
+  animate?: "float" | "drift" | "pulse" | "none";
 };
 
 /**
@@ -24,6 +24,7 @@ export function GlowOrb({
         color,
         animate === "float" && "animate-float",
         animate === "drift" && "animate-drift",
+        animate === "pulse" && "animate-pulse",
         className
       )}
     />

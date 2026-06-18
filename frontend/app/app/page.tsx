@@ -25,6 +25,7 @@ import {
   removeRecentRepo,
 } from "@/lib/storage";
 import { riskLevel, riskScore } from "@/lib/risk";
+import { cn } from "@/lib/utils";
 import type { GraveyardFile, RepoOverview } from "@/lib/mock-data";
 
 export default function ConsolePage() {
@@ -186,13 +187,18 @@ export default function ConsolePage() {
 
   return (
     <main className="mx-auto max-w-7xl px-4 pb-24 pt-8 sm:px-6">
-      <div className="mb-6">
+      <motion.div
+        className="mb-6"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+      >
         <h1 className="font-display text-3xl text-gradient">Repository console</h1>
         <p className="mt-1 text-sm text-slate-400">
           Point OmniTrace at a local git repo to surface its riskiest, most
           forgotten files — then let AI explain them.
         </p>
-      </div>
+      </motion.div>
 
       <ScanBar
         repoPath={repoPath}
@@ -284,19 +290,29 @@ export default function ConsolePage() {
 
               {displayed.length > 0 ? (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {displayed.map((file) => (
-                    <button
+                  {displayed.map((file, i) => (
+                    <motion.button
                       key={file.path}
+                      layout
+                      initial={{ opacity: 0, y: 16, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{
+                        delay: Math.min(i * 0.04, 0.4),
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 26,
+                      }}
+                      whileHover={{ y: -5 }}
                       onClick={() => !analyzingPath && handleAnalyze(file)}
                       disabled={!!analyzingPath}
                       className="group relative block text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-excav-violet/70 disabled:opacity-60"
                     >
                       <FileCard file={file} />
                       <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-center gap-1.5 rounded-b-2xl bg-gradient-to-t from-excav-violet/30 to-transparent py-2 text-[11px] font-medium text-white opacity-0 transition-opacity group-hover:opacity-100">
-                        <Sparkles className="h-3 w-3" />
+                        <Sparkles className={cn("h-3 w-3", analyzingPath === file.path && "animate-spin")} />
                         {analyzingPath === file.path ? "Analyzing…" : "Analyze with AI"}
                       </span>
-                    </button>
+                    </motion.button>
                   ))}
                 </div>
               ) : (
@@ -311,10 +327,19 @@ export default function ConsolePage() {
 
       {/* Empty state */}
       {!hasResults && !scanning && (
-        <div className="mt-16 flex flex-col items-center text-center">
-          <div className="grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-excav-violet to-excav-violetDeep shadow-glow ring-1 ring-white/15">
+        <motion.div
+          className="mt-16 flex flex-col items-center text-center"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <motion.div
+            className="grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-excav-violet to-excav-violetDeep shadow-glow ring-1 ring-white/15"
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          >
             <Sparkles className="h-7 w-7 text-white" />
-          </div>
+          </motion.div>
           <h2 className="mt-6 max-w-xl font-display text-2xl text-slate-100">
             Every repo has buried history.
           </h2>
@@ -330,7 +355,7 @@ export default function ConsolePage() {
           >
             Configure AI model &amp; key
           </Button>
-        </div>
+        </motion.div>
       )}
 
       <SettingsDialog

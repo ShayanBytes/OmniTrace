@@ -1,5 +1,6 @@
 "use client";
 
+import { motion, useReducedMotion } from "framer-motion";
 import { Rocket, LifeBuoy, Scale, ShieldAlert, Check } from "lucide-react";
 
 import { SectionShell } from "@/components/shared/section-shell";
@@ -59,6 +60,7 @@ const CASES = [
 ];
 
 export function UseCases() {
+  const reduce = useReducedMotion();
   return (
     <SectionShell
       id="use-cases"
@@ -82,11 +84,21 @@ export function UseCases() {
 
         {CASES.map((c) => (
           <TabsContent key={c.id} value={c.id}>
-            <div className="glass grid gap-8 rounded-3xl p-8 lg:grid-cols-2 lg:p-10">
+            <motion.div
+              initial={reduce ? false : { opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="glass grid gap-8 rounded-3xl p-8 lg:grid-cols-2 lg:p-10"
+            >
               <div>
-                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-excav-violet/15 text-excav-lilac ring-1 ring-excav-violet/30">
+                <motion.span
+                  initial={reduce ? false : { scale: 0.6, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 360, damping: 20, delay: 0.05 }}
+                  className="grid h-12 w-12 place-items-center rounded-2xl bg-excav-violet/15 text-excav-lilac ring-1 ring-excav-violet/30"
+                >
                   <c.icon className="h-6 w-6" />
-                </span>
+                </motion.span>
                 <h3 className="mt-5 font-display text-2xl text-slate-100">
                   {c.headline}
                 </h3>
@@ -95,19 +107,22 @@ export function UseCases() {
                 </p>
               </div>
               <ul className="flex flex-col justify-center gap-3">
-                {c.points.map((p) => (
-                  <li
+                {c.points.map((p, pi) => (
+                  <motion.li
                     key={p}
-                    className="flex items-center gap-3 rounded-xl bg-white/[0.03] px-4 py-3 ring-1 ring-white/5"
+                    initial={reduce ? false : { opacity: 0, x: 16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.12 + pi * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                    className="group flex items-center gap-3 rounded-xl bg-white/[0.03] px-4 py-3 ring-1 ring-white/5 transition-colors hover:bg-white/[0.06]"
                   >
-                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-emerald-400/15">
+                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-emerald-400/15 transition-transform duration-300 group-hover:scale-110">
                       <Check className="h-3.5 w-3.5 text-emerald-300" />
                     </span>
                     <span className="text-sm text-slate-200">{p}</span>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
           </TabsContent>
         ))}
       </Tabs>

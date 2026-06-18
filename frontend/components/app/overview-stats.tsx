@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 
+import { AnimatedCounter } from "@/components/shared/animated-counter";
 import type { RepoOverview } from "@/lib/mock-data";
 
 function Tile({
@@ -17,12 +18,15 @@ function Tile({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.4, ease: "easeOut" }}
-      className="glass rounded-2xl p-4"
+      initial={{ opacity: 0, y: 12, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay, type: "spring", stiffness: 300, damping: 24 }}
+      whileHover={{ y: -4 }}
+      className="glass rounded-2xl p-4 transition-shadow hover:shadow-glow"
     >
-      <div className="font-display text-2xl text-gradient sm:text-3xl">{value}</div>
+      <div className="font-display text-2xl text-gradient sm:text-3xl">
+        {typeof value === "number" ? <AnimatedCounter value={value} /> : value}
+      </div>
       <div className="mt-1 text-xs font-medium uppercase tracking-wide text-slate-400">
         {label}
       </div>

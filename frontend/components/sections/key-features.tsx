@@ -13,6 +13,7 @@ import { SectionShell } from "@/components/shared/section-shell";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { Reveal } from "@/components/shared/reveal";
 import { GlowOrb } from "@/components/shared/glow-orb";
+import { SpotlightCard } from "@/components/shared/spotlight-card";
 import { cn } from "@/lib/utils";
 
 type Feature = {
@@ -91,16 +92,15 @@ export function KeyFeatures() {
       <div className="mt-12 grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {FEATURES.map((f, i) => (
           <Reveal key={f.title} delay={(i % 3) * 0.06} className={f.span}>
-            <div className="glass group relative h-full overflow-hidden rounded-2xl p-6 transition-all hover:shadow-card">
-              <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-excav-violet/10 blur-2xl transition-opacity group-hover:opacity-100" />
-              <span className="grid h-11 w-11 place-items-center rounded-xl bg-white/[0.04] ring-1 ring-white/10">
-                <f.icon className={cn("h-5 w-5", f.accent)} />
+            <SpotlightCard className="glass group h-full rounded-2xl p-6 transition-shadow hover:shadow-card">
+              <span className="grid h-11 w-11 place-items-center rounded-xl bg-white/[0.04] ring-1 ring-white/10 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-110">
+                <f.icon className={cn("h-5 w-5 transition-transform duration-300 group-hover:rotate-6", f.accent)} />
               </span>
               <h3 className="mt-4 font-display text-lg text-slate-100">{f.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {f.body}
               </p>
-            </div>
+            </SpotlightCard>
           </Reveal>
         ))}
       </div>

@@ -6,6 +6,7 @@ import { Reveal } from "@/components/shared/reveal";
 import { GlowOrb } from "@/components/shared/glow-orb";
 import { Badge } from "@/components/ui/badge";
 import { DependencyGraphScene } from "@/components/three/dependency-graph-scene.lazy";
+import { DependencyMinigraph } from "@/components/shared/charts/dependency-minigraph";
 
 const INSIGHTS = [
   { icon: Share2, label: "Import & call graph", value: "12,480 edges" },
@@ -64,6 +65,20 @@ export function DependencyVisualization() {
             </Reveal>
           ))}
           <Reveal delay={0.26}>
+            <div className="glass rounded-2xl p-4">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-[11px] uppercase tracking-wide text-slate-400">
+                  module map
+                </span>
+                <span className="flex items-center gap-1.5 text-[10px] text-amber-300">
+                  <span className="h-2 w-3 rounded-full border border-dashed border-amber-300/70" />
+                  cycle
+                </span>
+              </div>
+              <DependencyMinigraph className="aspect-[36/26]" />
+            </div>
+          </Reveal>
+          <Reveal delay={0.32}>
             <p className="px-1 text-sm leading-relaxed text-muted-foreground">
               Click any node to isolate its blast radius — every file it touches,
               and everything that touches it.

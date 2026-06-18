@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Reveal } from "@/components/shared/reveal";
 import { GlowOrb } from "@/components/shared/glow-orb";
 import { GridBackdrop } from "@/components/shared/grid-backdrop";
+import { AnimatedText } from "@/components/shared/animated-text";
+import { ScrollCue } from "@/components/shared/scroll-cue";
 import { HeroScene } from "@/components/three/hero-scene.lazy";
 
 export function Hero() {
@@ -27,19 +29,39 @@ export function Hero() {
         <div className="flex flex-col items-start gap-6">
           <Reveal>
             <Badge variant="violet">
-              <span className="h-1.5 w-1.5 rounded-full bg-excav-cyan" />
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-excav-cyan opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-excav-cyan" />
+              </span>
               Local-first repository intelligence
             </Badge>
           </Reveal>
 
-          <Reveal delay={0.05}>
-            <h1 className="font-display text-h1 text-gradient">
-              Excavate the story
-              <br />
-              hidden in your{" "}
-              <span className="text-gradient-brand">codebase</span>.
-            </h1>
-          </Reveal>
+          <h1 className="font-display text-h1">
+            <AnimatedText
+              as="div"
+              text="Excavate the story"
+              wordClassName="text-gradient"
+              entrance
+            />
+            <div>
+              <AnimatedText
+                as="span"
+                text="hidden in your "
+                wordClassName="text-gradient"
+                entrance
+                delay={0.28}
+              />
+              <AnimatedText
+                as="span"
+                text="codebase"
+                wordClassName="text-gradient-brand"
+                entrance
+                delay={0.5}
+              />
+              <span className="text-gradient">.</span>
+            </div>
+          </h1>
 
           <Reveal delay={0.1}>
             <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
@@ -88,9 +110,7 @@ export function Hero() {
       </div>
 
       {/* Scroll hint */}
-      <div className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-[11px] uppercase tracking-[0.3em] text-slate-600">
-        scroll to dig
-      </div>
+      <ScrollCue className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2" />
     </section>
   );
 }

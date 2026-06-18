@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import { Menu, ArrowUpRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -24,6 +25,7 @@ const NAV: NavLink[] = [
 export function StickyNav() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = React.useState(false);
+  const [hovered, setHovered] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -54,25 +56,36 @@ export function StickyNav() {
         </Link>
 
         <nav
+          onMouseLeave={() => setHovered(null)}
           className={cn(
             "hidden items-center gap-1 rounded-full px-2 py-1.5 transition-all lg:flex",
             scrolled ? "glass border border-white/10" : "border border-transparent"
           )}
         >
-          {NAV.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className={cn(
-                "rounded-full px-3.5 py-1.5 text-sm transition-colors",
-                isActive(l)
-                  ? "bg-excav-violet/20 text-white"
-                  : "text-muted-foreground hover:text-white"
-              )}
-            >
-              {l.label}
-            </Link>
-          ))}
+          {NAV.map((l) => {
+            const active = isActive(l);
+            const lit = hovered ? hovered === l.href : active;
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                onMouseEnter={() => setHovered(l.href)}
+                className={cn(
+                  "relative rounded-full px-3.5 py-1.5 text-sm transition-colors",
+                  lit ? "text-white" : "text-muted-foreground"
+                )}
+              >
+                {lit && (
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="absolute inset-0 -z-10 rounded-full bg-excav-violet/20 ring-1 ring-excav-violet/30"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                {l.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-2">

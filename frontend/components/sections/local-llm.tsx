@@ -6,6 +6,7 @@ import { Reveal } from "@/components/shared/reveal";
 import { GlowOrb } from "@/components/shared/glow-orb";
 import { Badge } from "@/components/ui/badge";
 import { ProviderLogo } from "@/components/shared/provider-logo";
+import { SpotlightCard } from "@/components/shared/spotlight-card";
 import { PROVIDERS } from "@/lib/mock-data";
 
 const GUARANTEES = [
@@ -30,9 +31,9 @@ export function LocalLLM() {
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {PROVIDERS.map((p, i) => (
           <Reveal key={p.id} delay={i * 0.07}>
-            <div className="glass group flex h-full flex-col gap-3 rounded-2xl p-5 transition-shadow hover:shadow-card">
+            <SpotlightCard className="glass group flex h-full flex-col gap-3 rounded-2xl p-5 transition-shadow hover:shadow-card">
               <div className="flex items-center justify-between">
-                <span className="grid h-10 w-10 place-items-center rounded-xl bg-excav-violet/15 text-excav-lilac ring-1 ring-excav-violet/30">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-excav-violet/15 text-excav-lilac ring-1 ring-excav-violet/30 transition-transform duration-300 group-hover:scale-110">
                   <ProviderLogo id={p.id} />
                 </span>
                 <Badge variant={p.local ? "risk-low" : "default"}>{p.badge}</Badge>
@@ -53,7 +54,7 @@ export function LocalLLM() {
                   </span>
                 ))}
               </div>
-            </div>
+            </SpotlightCard>
           </Reveal>
         ))}
       </div>

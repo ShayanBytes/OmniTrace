@@ -49,15 +49,32 @@ export function DeveloperWorkflow() {
       />
 
       <div className="relative mt-14">
-        {/* Connecting line (desktop) */}
-        <div className="absolute left-0 right-0 top-7 hidden h-px bg-gradient-to-r from-transparent via-excav-violet/40 to-transparent lg:block" />
+        {/* Connecting line (desktop) — a flowing dashed beam between steps. */}
+        <svg
+          aria-hidden
+          className="absolute left-0 right-0 top-7 hidden h-px w-full lg:block"
+          preserveAspectRatio="none"
+          viewBox="0 0 100 1"
+        >
+          <line x1="0" y1="0.5" x2="100" y2="0.5" stroke="rgba(140,69,255,0.18)" strokeWidth="1" />
+          <line
+            x1="0"
+            y1="0.5"
+            x2="100"
+            y2="0.5"
+            stroke="#8c45ff"
+            strokeWidth="1"
+            strokeDasharray="6 10"
+            className="animate-dash"
+          />
+        </svg>
 
         <div className="grid gap-6 lg:grid-cols-4">
           {STEPS.map((s, i) => (
             <Reveal key={s.n} delay={i * 0.1}>
-              <div className="relative flex flex-col gap-4">
-                <span className="relative z-10 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-excav-violet to-excav-violetDeep shadow-glow ring-1 ring-white/15">
-                  <s.icon className="h-6 w-6 text-white" />
+              <div className="group relative flex flex-col gap-4">
+                <span className="relative z-10 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-excav-violet to-excav-violetDeep shadow-glow ring-1 ring-white/15 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-105">
+                  <s.icon className="h-6 w-6 text-white transition-transform duration-300 group-hover:scale-110" />
                 </span>
                 <div>
                   <div className="flex items-center gap-2">

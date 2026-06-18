@@ -56,14 +56,69 @@ const { NODES, EDGES } = (() => {
   return { NODES: nodes, EDGES: edges };
 })();
 
+// Small emissive "data packets" that ride along a subset of edges on a loop.
+const PACKET_EDGES = EDGES.filter((_, i) => i % 2 === 0);
+
+function Packets() {
+  const refs = React.useRef<(THREE.Mesh | null)[]>([]);
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    PACKET_EDGES.forEach((pts, i) => {
+      const m = refs.current[i];
+      if (!m) return;
+      // Loop 0→1 with a per-edge phase offset, ping-ponging direction.
+      const frac = (t * 0.4 + i * 0.37) % 1;
+      m.position.lerpVectors(pts[0], pts[1], frac);
+      const mat = m.material as THREE.MeshStandardMaterial;
+      // Fade in/out at the ends so packets don't "teleport".
+      mat.opacity = Math.sin(frac * Math.PI);
+    });
+  });
+  return (
+    <>
+      {PACKET_EDGES.map((_, i) => (
+        <mesh key={i} ref={(el) => { refs.current[i] = el; }}>
+          <sphereGeometry args={[0.045, 10, 10]} />
+          <meshStandardMaterial
+            color="#43e7ff"
+            emissive="#43e7ff"
+            emissiveIntensity={3}
+            transparent
+            toneMapped={false}
+          />
+        </mesh>
+      ))}
+    </>
+  );
+}
+
 function Graph() {
   const group = React.useRef<THREE.Group>(null);
+  const nodeRefs = React.useRef<(THREE.Mesh | null)[]>([]);
+  const start = React.useRef<number | null>(null);
+
   useFrame((state, delta) => {
     if (group.current) {
       group.current.rotation.y += delta * 0.18;
       group.current.rotation.x =
         Math.sin(state.clock.elapsedTime * 0.2) * 0.15;
     }
+    // Staggered pop-in + gentle hub pulse.
+    if (start.current === null) start.current = state.clock.elapsedTime;
+    const t = state.clock.elapsedTime - start.current;
+    NODES.forEach((n, i) => {
+      const m = nodeRefs.current[i];
+      if (!m) return;
+      const appear = Math.min(1, Math.max(0, (t - i * 0.04) * 3));
+      // easeOutBack for a little overshoot.
+      const e = appear === 1 ? 1 : 1 - Math.pow(1 - appear, 3);
+      const overshoot = 1 + 0.18 * Math.sin(appear * Math.PI);
+      m.scale.setScalar(e * (appear < 1 ? overshoot : 1));
+      if (n.hub) {
+        const mat = m.material as THREE.MeshStandardMaterial;
+        mat.emissiveIntensity = 1.6 + Math.sin(state.clock.elapsedTime * 2 + i) * 0.5;
+      }
+    });
   });
 
   return (
@@ -79,7 +134,7 @@ function Graph() {
         />
       ))}
       {NODES.map((n, i) => (
-        <mesh key={i} position={n.pos}>
+        <mesh key={i} position={n.pos} ref={(el) => { nodeRefs.current[i] = el; }} scale={0}>
           <sphereGeometry args={[n.size, 18, 18]} />
           <meshStandardMaterial
             color={n.hub ? "#43e7ff" : "#b372cf"}
@@ -89,6 +144,7 @@ function Graph() {
           />
         </mesh>
       ))}
+      <Packets />
     </group>
   );
 }

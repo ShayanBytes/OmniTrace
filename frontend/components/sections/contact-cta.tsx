@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 
 import { SectionShell } from "@/components/shared/section-shell";
@@ -9,7 +10,19 @@ import { GlowOrb } from "@/components/shared/glow-orb";
 import { GridBackdrop } from "@/components/shared/grid-backdrop";
 import { Button } from "@/components/ui/button";
 
+// Pre-computed radial burst directions for the success confetti puff.
+const BURST = Array.from({ length: 14 }, (_, i) => {
+  const a = (i / 14) * Math.PI * 2;
+  const colors = ["#8c45ff", "#43e7ff", "#ffb347", "#b372cf"];
+  return {
+    x: Math.cos(a) * (44 + (i % 3) * 14),
+    y: Math.sin(a) * (44 + (i % 3) * 14),
+    color: colors[i % colors.length],
+  };
+});
+
 export function ContactCTA() {
+  const reduce = useReducedMotion();
   const [email, setEmail] = React.useState("");
   const [sent, setSent] = React.useState(false);
 
@@ -47,8 +60,25 @@ export function ContactCTA() {
         {/* Email capture */}
         <form
           onSubmit={onSubmit}
-          className="mt-8 flex w-full max-w-md flex-col gap-3 sm:flex-row"
+          className="relative mt-8 flex w-full max-w-md flex-col gap-3 sm:flex-row"
         >
+          {/* Success confetti puff, centered on the form. */}
+          <AnimatePresence>
+            {sent && !reduce && (
+              <div className="pointer-events-none absolute left-1/2 top-1/2 z-20">
+                {BURST.map((p, i) => (
+                  <motion.span
+                    key={i}
+                    className="absolute h-1.5 w-1.5 rounded-full"
+                    style={{ backgroundColor: p.color }}
+                    initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+                    animate={{ x: p.x, y: p.y, opacity: 0, scale: 0.4 }}
+                    transition={{ duration: 0.9, ease: "easeOut" }}
+                  />
+                ))}
+              </div>
+            )}
+          </AnimatePresence>
           <input
             type="email"
             required
