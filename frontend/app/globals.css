@@ -1,0 +1,177 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   OmniTrace global theme.
+   Dark-only product site. shadcn tokens live as HSL triples on :root (mirrored
+   under .dark for convention). Values map to the brand palette in
+   tailwind.config.ts: background ≈ #040308, card ≈ #0d0a16, primary ≈ violet.
+--------------------------------------------------------------------------- */
+@layer base {
+  :root,
+  .dark {
+    --background: 260 45% 3%; /* #040308 near-black */
+    --foreground: 255 30% 94%;
+
+    --card: 258 38% 6%; /* #0d0a16 */
+    --card-foreground: 255 25% 92%;
+
+    --popover: 258 40% 5%;
+    --popover-foreground: 255 25% 92%;
+
+    --primary: 267 100% 64%; /* #8c45ff violet */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 258 30% 14%;
+    --secondary-foreground: 255 20% 90%;
+
+    --muted: 258 24% 12%;
+    --muted-foreground: 255 12% 62%;
+
+    --accent: 268 90% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 350 80% 56%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 260 30% 18%;
+    --input: 260 30% 16%;
+    --ring: 267 100% 70%;
+
+    --radius: 0.85rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-image: theme("backgroundImage.violet-mesh");
+    background-attachment: fixed;
+    font-feature-settings: "cv11", "ss01";
+    letter-spacing: -0.0001em;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* Respect reduced-motion globally: kill smooth scroll + long animations. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  /* Offset anchor jumps so the sticky nav doesn't cover section headings. */
+  section[id] {
+    scroll-margin-top: 5.5rem;
+  }
+}
+
+@layer components {
+  /* Display headings: Inter Medium with tight negative tracking. */
+  .font-display {
+    font-family: var(--font-inter), sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+
+  /* Glass panel: dark violet-tinted fill, blur, faint top highlight. */
+  .glass {
+    background: linear-gradient(
+      180deg,
+      rgba(25, 16, 43, 0.72),
+      rgba(10, 7, 20, 0.78)
+    );
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  }
+
+  /* "Lit from within" glass for primary CTAs / highlighted surfaces. */
+  .glass-bright {
+    background: rgba(140, 69, 255, 0.18);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 0 6px 3px rgba(255, 255, 255, 0.16);
+  }
+
+  /* Gradient display text — white fading into lilac (brand signature). */
+  .text-gradient {
+    background: linear-gradient(180deg, #ffffff 52%, #b372cf 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Multi-stop animated gradient for accent words. */
+  .text-gradient-brand {
+    background: linear-gradient(100deg, #b372cf, #8c45ff 35%, #43e7ff 70%, #ffb347);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    @apply animate-gradient-pan;
+  }
+
+  /* Hairline gradient divider. */
+  .rule {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(140, 69, 255, 0.4),
+      transparent
+    );
+  }
+}
+
+@layer utilities {
+  /* Fine film-grain / noise overlay for depth (applied on a fixed layer). */
+  .noise {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  }
+
+  .mask-fade-x {
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      black 12%,
+      black 88%,
+      transparent
+    );
+  }
+}
+
+/* Thin custom scrollbar native to the dark theme. */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(140, 69, 255, 0.28);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(152, 85, 255, 0.5);
+  background-clip: content-box;
+}
