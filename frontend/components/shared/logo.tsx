@@ -1,6 +1,10 @@
 import { cn } from "@/lib/utils";
 
-/** OmniTrace wordmark: a magnifier-with-clock-hand mark + gradient name. */
+/**
+ * OmniTrace wordmark: a terminal-glyph tile (`>_`) + gradient name.
+ * The chevron is a crisp SVG path; the cursor underscore is tinted cyan and
+ * gently blinks (disabled under reduced motion via the global CSS rule).
+ */
 export function Logo({
   className,
   showWord = true,
@@ -12,19 +16,31 @@ export function Logo({
     <span className={cn("flex items-center gap-2.5", className)}>
       <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-excav-violet to-excav-violetDeep shadow-glow ring-1 ring-white/15">
         <svg
-          width="18"
-          height="18"
+          width="20"
+          height="20"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="white"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
           aria-hidden
         >
-          <circle cx="11" cy="11" r="7" />
-          <path d="m21 21-3.6-3.6" />
-          <path d="M11 8v3l2 2" />
+          {/* chevron ">" */}
+          <path
+            d="M7 8.5 L11 12 L7 15.5"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          {/* blinking cursor "_" */}
+          <line
+            x1="12.5"
+            y1="15.5"
+            x2="17"
+            y2="15.5"
+            stroke="#43e7ff"
+            strokeWidth="2"
+            strokeLinecap="round"
+            className="animate-pulse"
+          />
         </svg>
       </span>
       {showWord && (

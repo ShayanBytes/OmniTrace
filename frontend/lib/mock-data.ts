@@ -20,12 +20,12 @@ export type GraveyardFile = {
 };
 
 export type RepoOverview = {
-  repo: string;
+  repo?: string;
   total_commits: number;
   total_files: number;
   contributors: number;
   active_branch: string;
-  last_commit_date: string; // ISO
+  last_commit_date: string | null; // ISO
 };
 
 export type Provider = {

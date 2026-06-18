@@ -1,14 +1,14 @@
 @echo off
 REM ===========================================================================
-REM  OmniTrace - Start the React frontend (the web UI)
+REM  OmniTrace - Start the Next.js frontend (the web UI)
 REM ---------------------------------------------------------------------------
-REM  This launches the Vite dev server on http://localhost:5173 and proxies
+REM  This launches the Next.js dev server on http://localhost:3000 and proxies
 REM  /api calls to the backend on port 8000. Start start-backend.bat first.
 REM ===========================================================================
 
 echo.
 echo ==========================================================
-echo             OMNITRACE - WEB UI (port 5173)
+echo             OMNITRACE - WEB UI (port 3000)
 echo ==========================================================
 echo.
 
@@ -25,7 +25,7 @@ if not exist node_modules (
     )
 )
 
-echo [2/2] Starting the UI on http://localhost:5173 ...
+echo [2/2] Starting the UI on http://localhost:3000 ...
 echo       (Press Ctrl+C to stop.)
 echo.
 call npm run dev

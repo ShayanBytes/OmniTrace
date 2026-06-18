@@ -1,7 +1,3 @@
-import { ScrollProgress } from "@/components/layout/scroll-progress";
-import { StickyNav } from "@/components/layout/sticky-nav";
-import { Footer } from "@/components/layout/footer";
-
 import { Hero } from "@/components/sections/hero";
 import { RepositoryIntelligence } from "@/components/sections/repository-intelligence";
 import { ArchitectureMapping } from "@/components/sections/architecture-mapping";
@@ -18,25 +14,20 @@ import { ContactCTA } from "@/components/sections/contact-cta";
 
 export default function Home() {
   return (
-    <>
-      <ScrollProgress />
-      <StickyNav />
-      <main>
-        <Hero />
-        <RepositoryIntelligence />
-        <ArchitectureMapping />
-        <DependencyVisualization />
-        <SemanticSearch />
-        <LocalLLM />
-        <ProductDemo />
-        <KeyFeatures />
-        <UseCases />
-        <TechnicalArchitecture />
-        <DeveloperWorkflow />
-        <ProjectShowcase />
-        <ContactCTA />
-      </main>
-      <Footer />
-    </>
+    <main>
+      <Hero />
+      <RepositoryIntelligence />
+      <ArchitectureMapping />
+      <DependencyVisualization />
+      <SemanticSearch />
+      <LocalLLM />
+      <ProductDemo />
+      <KeyFeatures />
+      <UseCases />
+      <TechnicalArchitecture />
+      <DeveloperWorkflow />
+      <ProjectShowcase />
+      <ContactCTA />
+    </main>
   );
 }
