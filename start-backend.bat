@@ -1,6 +1,6 @@
 @echo off
 REM ===========================================================================
-REM  Code Archaeologist - Start the FastAPI backend (the "API" half)
+REM  OmniTrace - Start the FastAPI backend (the "API" half)
 REM ---------------------------------------------------------------------------
 REM  This serves the git-digging + AI endpoints on http://localhost:8000.
 REM  Run start-frontend.bat in a SECOND terminal for the web UI.
@@ -8,7 +8,7 @@ REM ===========================================================================
 
 echo.
 echo ==========================================================
-echo        CODE ARCHAEOLOGIST - BACKEND API (port 8000)
+echo            OMNITRACE - BACKEND API (port 8000)
 echo ==========================================================
 echo.
 

@@ -1,7 +1,7 @@
 """
 brain.py
 --------
-The provider-agnostic "AI" layer of Code Archaeologist.
+The provider-agnostic "AI" layer of OmniTrace.
 
 The user chooses an AI provider at runtime from the UI and (for cloud
 providers) supplies their OWN API key. Supported providers:

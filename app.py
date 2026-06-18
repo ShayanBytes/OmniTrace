@@ -1,7 +1,7 @@
 """
 app.py
 ------
-The Streamlit dashboard for Code Archaeologist.
+The Streamlit dashboard for OmniTrace (legacy all-in-one prototype).
 
 Run it with:
     streamlit run app.py
@@ -31,7 +31,7 @@ from brain import analyze_code_with_ollama
 # Page configuration (title, icon, layout). Must be the first Streamlit call.
 # ---------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Code Archaeologist",
+    page_title="OmniTrace",
     page_icon="🏺",
     layout="wide",
 )
@@ -56,7 +56,7 @@ def read_file_safely(repo_path, relative_path):
 # ---------------------------------------------------------------------------
 # Sidebar: where the user types the path to the repo they want to excavate.
 # ---------------------------------------------------------------------------
-st.sidebar.title("🏺 Code Archaeologist")
+st.sidebar.title("🛰️ OmniTrace")
 st.sidebar.caption("Dig up your repo's forgotten, risky code. 100% local.")
 
 repo_path = st.sidebar.text_input(
@@ -98,7 +98,7 @@ if scan_clicked:
 # ---------------------------------------------------------------------------
 # Main area: three tabs.
 # ---------------------------------------------------------------------------
-st.title("Code Archaeologist")
+st.title("OmniTrace")
 
 tab_overview, tab_graveyard, tab_explorer = st.tabs(
     ["📊 Overview", "🪦 The Graveyard", "🔎 File Explorer"]

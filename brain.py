@@ -1,7 +1,7 @@
 """
 brain.py
 --------
-The "AI" layer of Code Archaeologist.
+The "AI" layer of OmniTrace.
 
 This module talks to a LOCAL Llama 3 model running inside Ollama.
 There are NO paid cloud APIs here. Everything happens on your own

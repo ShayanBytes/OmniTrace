@@ -1,6 +1,6 @@
 @echo off
 REM ===========================================================================
-REM  Code Archaeologist - Start the React frontend (the web UI)
+REM  OmniTrace - Start the React frontend (the web UI)
 REM ---------------------------------------------------------------------------
 REM  This launches the Vite dev server on http://localhost:5173 and proxies
 REM  /api calls to the backend on port 8000. Start start-backend.bat first.
@@ -8,7 +8,7 @@ REM ===========================================================================
 
 echo.
 echo ==========================================================
-echo        CODE ARCHAEOLOGIST - WEB UI (port 5173)
+echo             OMNITRACE - WEB UI (port 5173)
 echo ==========================================================
 echo.
 

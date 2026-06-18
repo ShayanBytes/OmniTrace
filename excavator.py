@@ -1,7 +1,7 @@
 """
 excavator.py
 ------------
-The "digging" layer of Code Archaeologist.
+The "digging" layer of OmniTrace.
 
 This module is responsible for two jobs:
   1. Finding the most "abandoned" files in a git repository

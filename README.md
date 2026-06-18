@@ -1,10 +1,10 @@
-# 🏺 Code Archaeologist
+# 🛰️ OmniTrace
 
-Point it at any local **git repository** and it digs up the **forgotten, risky
+Point it at any local **git repository** and it traces the **forgotten, risky
 corners** of your codebase — the files nobody has touched in ages, ranked by how
 dangerous they are to revive (old **and** complex = highest risk). Then any AI
-model you like writes a short "archaeology report" explaining what each file was
-for and what the last big change was.
+model you like writes a short report explaining what each file was for and what
+the last big change was.
 
 Everything git-related runs **locally**. AI is **bring-your-own** — pick a
 provider and (for cloud ones) paste your own key. Keys are sent only with your
@@ -18,6 +18,16 @@ analysis request and are **never stored on the server**.
 | ------------ | -------------------------------------- | ---------------------------------------------- |
 | **Backend**  | FastAPI · GitPython · Lizard           | Digs git history, scores complexity, calls AI  |
 | **Frontend** | React · Tailwind CSS · Framer Motion   | Masonry "graveyard" grid with 3D tilt cards    |
+
+### Handy extras
+
+- 🔎 **Search, sort & risk filters** over the graveyard grid (sort by idle /
+  risk / complexity / name; filter to High / Watch / Stable). Press **`/`** to
+  jump to the filter, **`Esc`** to close any modal.
+- 🕘 **Recent repos** — one-click re-scan of paths you've traced before.
+- 🎚️ **Scan depth** — choose how many abandoned files to surface (Top 8–50).
+- 📋 **Copy / download** any AI report as Markdown.
+- 🔔 Lightweight **toasts** for quick feedback.
 
 ### Dynamic AI — use whatever model you want
 
@@ -48,7 +58,7 @@ start-backend.bat
 start-frontend.bat
 ```
 
-Then open <http://localhost:5173>, paste a local repo path, and hit **Excavate**.
+Then open <http://localhost:5173>, paste a local repo path, and hit **Trace**.
 
 ### Manual / non-Windows
 
@@ -78,7 +88,7 @@ npm run dev
 1. **Scan** (`POST /api/scan`) — lists tracked files, finds the ones with the
    oldest most-recent commit, and runs [Lizard](https://github.com/terryyin/lizard)
    for cyclomatic complexity.
-2. **Excavate a file** (`POST /api/analyze`) — reads the file + its last 5
+2. **Analyze a file** (`POST /api/analyze`) — reads the file + its last 5
    commit messages and asks your chosen AI provider to explain it.
 
 The frontend renders the results as a responsive **masonry grid** (`columns-1
@@ -101,8 +111,10 @@ cursor, color-coded by risk.
 │       ├── App.jsx
 │       ├── api.js          # fetch helpers
 │       ├── providers.js    # the "bring your own AI" config + presets
+│       ├── storage.js      # recent-repos persistence
 │       ├── utils.js        # risk scoring, formatting
-│       └── components/     # ScanBar, Masonry, FileCard (3D), SettingsModal, ReportModal, …
+│       └── components/     # ScanBar, GraveyardToolbar, Masonry, FileCard (3D),
+│                           # SettingsModal, ReportModal, Toasts, …
 ├── start-backend.bat
 └── start-frontend.bat
 ```

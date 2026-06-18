@@ -1,7 +1,7 @@
 """
 main.py
 -------
-The FastAPI backend for Code Archaeologist.
+The FastAPI backend for OmniTrace.
 
 It exposes the git-digging + AI logic as a small JSON API that the
 React frontend calls. Run it with:
@@ -26,7 +26,7 @@ import excavator
 import brain
 
 
-app = FastAPI(title="Code Archaeologist API", version="1.0.0")
+app = FastAPI(title="OmniTrace API", version="1.0.0")
 
 # ---------------------------------------------------------------------------
 # CORS: allow the Vite dev server (localhost:5173) to call this API.
@@ -70,7 +70,7 @@ def health():
 @app.post("/api/scan")
 def scan(req: ScanRequest):
     """
-    Excavate a repository: return overview stats plus the 'graveyard'
+    Trace a repository: return overview stats plus the 'graveyard'
     (most abandoned files enriched with complexity scores).
     """
     try:

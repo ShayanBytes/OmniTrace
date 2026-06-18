@@ -13,6 +13,8 @@ export default function ScanBar({
   backendUp,
   settings,
   onOpenSettings,
+  topN,
+  setTopN,
 }) {
   const provider = PROVIDERS[settings.provider];
 
@@ -41,6 +43,20 @@ export default function ScanBar({
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Scan depth: how many abandoned files to surface */}
+          <select
+            value={topN}
+            onChange={(e) => setTopN(Number(e.target.value))}
+            title="How many abandoned files to surface"
+            className="rounded-xl bg-black/40 px-2.5 py-3 text-xs text-slate-200 outline-none ring-1 ring-white/10 transition focus:ring-2 focus:ring-violet-400/70"
+          >
+            {[8, 12, 20, 30, 50].map((n) => (
+              <option key={n} value={n} className="bg-slate-900">
+                Top {n}
+              </option>
+            ))}
+          </select>
+
           {/* Provider chip → opens settings */}
           <button
             onClick={onOpenSettings}
@@ -71,7 +87,7 @@ export default function ScanBar({
             className="relative overflow-hidden rounded-xl bg-gradient-to-r from-violet-500 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-900/40 transition disabled:cursor-not-allowed disabled:opacity-50"
           >
             <span className="relative z-10">
-              {scanning ? "Excavating…" : "Excavate"}
+              {scanning ? "Tracing…" : "Trace"}
             </span>
             {scanning && (
               <span className="absolute inset-0 z-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />

@@ -1,21 +1,26 @@
 // App.jsx
-// Top-level composition for Code Archaeologist:
-//   1. enter a local git repo path and "Excavate" it
-//   2. see an overview + a masonry grid of the most abandoned files
-//   3. click any "artifact" to get an AI archaeology report, using whatever
-//      AI provider / model / key the user configured in Settings
-import { useEffect, useState } from "react";
+// Top-level composition for OmniTrace:
+//   1. enter a local git repo path and "Trace" it
+//   2. see an overview + a masonry grid of the most abandoned files,
+//      with live search / sort / risk filtering
+//   3. click any "artifact" to get an AI report, using whatever AI
+//      provider / model / key the user configured in Settings
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import Background from "./components/Background.jsx";
 import ScanBar from "./components/ScanBar.jsx";
 import OverviewStats from "./components/OverviewStats.jsx";
 import Masonry from "./components/Masonry.jsx";
+import GraveyardToolbar from "./components/GraveyardToolbar.jsx";
 import SettingsModal from "./components/SettingsModal.jsx";
 import ReportModal from "./components/ReportModal.jsx";
+import Toasts from "./components/Toasts.jsx";
 
 import { analyzeFile, checkHealth, scanRepo } from "./api.js";
 import { loadSettings, saveSettings } from "./providers.js";
+import { loadRecentRepos, pushRecentRepo, removeRecentRepo } from "./storage.js";
+import { riskLevel, riskScore } from "./utils.js";
 
 export default function App() {
   // ----- AI provider settings (persisted) -----------------------------
@@ -24,14 +29,32 @@ export default function App() {
 
   // ----- scan state ----------------------------------------------------
   const [repoPath, setRepoPath] = useState("");
+  const [topN, setTopN] = useState(12);
   const [scanning, setScanning] = useState(false);
   const [scanError, setScanError] = useState("");
   const [overview, setOverview] = useState(null);
   const [graveyard, setGraveyard] = useState([]);
+  const [recents, setRecents] = useState(loadRecentRepos);
+
+  // ----- grid controls -------------------------------------------------
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("idle");
+  const [risk, setRisk] = useState("all");
+  const searchRef = useRef(null);
 
   // ----- analysis (report) state --------------------------------------
   const [report, setReport] = useState(null); // { file, loading, error, ... }
   const [analyzingPath, setAnalyzingPath] = useState(null);
+
+  // ----- toasts --------------------------------------------------------
+  const [toasts, setToasts] = useState([]);
+  const toastSeq = useRef(0);
+  function addToast(message, tone = "info") {
+    const id = ++toastSeq.current;
+    setToasts((t) => [...t, { id, message, tone }]);
+    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 3200);
+  }
+  const dismissToast = (id) => setToasts((t) => t.filter((x) => x.id !== id));
 
   // ----- backend health dot -------------------------------------------
   const [backendUp, setBackendUp] = useState(false);
@@ -49,37 +72,75 @@ export default function App() {
     };
   }, []);
 
+  // ----- keyboard shortcuts -------------------------------------------
+  useEffect(() => {
+    function onKey(e) {
+      // "/" focuses the grid filter (unless already typing in a field)
+      if (
+        e.key === "/" &&
+        graveyard.length > 0 &&
+        document.activeElement?.tagName !== "INPUT" &&
+        document.activeElement?.tagName !== "SELECT" &&
+        document.activeElement?.tagName !== "TEXTAREA"
+      ) {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+      // Esc closes whichever modal is open
+      if (e.key === "Escape") {
+        if (report) setReport(null);
+        else if (settingsOpen) setSettingsOpen(false);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [graveyard.length, report, settingsOpen]);
+
   function persistSettings(next) {
     setSettings(next);
     saveSettings(next);
     setSettingsOpen(false);
+    addToast(`AI provider set to ${next.provider}`, "success");
   }
 
-  async function handleScan() {
-    if (!repoPath.trim()) return;
+  async function handleScan(path = repoPath) {
+    const target = (path || "").trim();
+    if (!target) return;
     setScanning(true);
     setScanError("");
     setOverview(null);
     setGraveyard([]);
+    setSearch("");
+    setRisk("all");
     try {
-      const data = await scanRepo(repoPath.trim(), 12);
+      const data = await scanRepo(target, topN);
       if (!data.ok) {
         setScanError(data.error || "Scan failed.");
+        addToast("Scan failed", "error");
       } else {
         setOverview(data.overview);
         setGraveyard(data.graveyard || []);
+        setRecents(pushRecentRepo(target));
+        addToast(
+          `Traced ${data.graveyard?.length || 0} abandoned files`,
+          "success"
+        );
       }
     } catch {
       setScanError(
         "Could not reach the backend. Make sure the API is running on port 8000."
       );
+      addToast("Backend unreachable", "error");
     } finally {
       setScanning(false);
     }
   }
 
+  function dropRecent(path) {
+    setRecents(removeRecentRepo(path));
+  }
+
   async function handleAnalyze(file) {
-    // Guard: cloud providers need a key before we even call the server.
     setAnalyzingPath(file.path);
     setReport({ file, loading: true });
     try {
@@ -106,6 +167,31 @@ export default function App() {
     }
   }
 
+  // ----- derived: counts, filtered + sorted grid ----------------------
+  const counts = useMemo(() => {
+    const c = { high: 0, medium: 0, low: 0 };
+    graveyard.forEach((f) => {
+      c[riskLevel(f).key] += 1;
+    });
+    return c;
+  }, [graveyard]);
+
+  const displayed = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    let list = graveyard.filter((f) => {
+      if (risk !== "all" && riskLevel(f).key !== risk) return false;
+      if (q && !f.path.toLowerCase().includes(q)) return false;
+      return true;
+    });
+    const by = {
+      idle: (a, b) => b.days_idle - a.days_idle,
+      risk: (a, b) => riskScore(b) - riskScore(a),
+      complexity: (a, b) => (b.max_complexity || 0) - (a.max_complexity || 0),
+      name: (a, b) => a.path.localeCompare(b.path),
+    };
+    return [...list].sort(by[sort] || by.idle);
+  }, [graveyard, search, risk, sort]);
+
   const hasResults = overview || graveyard.length > 0;
 
   return (
@@ -118,17 +204,17 @@ export default function App() {
           <div className="flex items-center gap-3">
             <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-500 shadow-glow">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14.5 12.5 6.6 20.4a1 1 0 1 1-3-3l7.9-7.9" />
-                <path d="M15.7 4.3A12.5 12.5 0 0 0 5.5 3a1 1 0 0 0-.3 1.5 12.5 12.5 0 0 1 4.3 8l5.2-8.2z" />
-                <path d="M18.3 15.7A12.5 12.5 0 0 0 19.7 5.5 1 1 0 0 0 18.1 5.3 12.5 12.5 0 0 1 10.1 9.5l8.2 6.2z" />
+                <circle cx="11" cy="11" r="7" />
+                <path d="m21 21-3.6-3.6" />
+                <path d="M11 8v3l2 2" />
               </svg>
             </div>
             <div>
               <h1 className="text-xl font-extrabold tracking-tight text-gradient sm:text-2xl">
-                Code Archaeologist
+                OmniTrace
               </h1>
               <p className="text-[11px] text-slate-400 sm:text-xs">
-                Dig up the forgotten, risky corners of any git repo.
+                Trace the forgotten, risky corners of any git repo.
               </p>
             </div>
           </div>
@@ -138,12 +224,47 @@ export default function App() {
         <ScanBar
           repoPath={repoPath}
           setRepoPath={setRepoPath}
-          onScan={handleScan}
+          onScan={() => handleScan()}
           scanning={scanning}
           backendUp={backendUp}
           settings={settings}
           onOpenSettings={() => setSettingsOpen(true)}
+          topN={topN}
+          setTopN={setTopN}
         />
+
+        {/* ---- Recent repos ---- */}
+        {recents.length > 0 && !hasResults && (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="text-[11px] uppercase tracking-wide text-slate-500">
+              Recent
+            </span>
+            {recents.map((p) => (
+              <span
+                key={p}
+                className="group flex items-center gap-1 rounded-full bg-white/5 py-1 pl-3 pr-1 text-xs text-slate-300 ring-1 ring-white/10"
+              >
+                <button
+                  onClick={() => {
+                    setRepoPath(p);
+                    handleScan(p);
+                  }}
+                  className="max-w-[16rem] truncate transition hover:text-white"
+                  title={p}
+                >
+                  {p}
+                </button>
+                <button
+                  onClick={() => dropRecent(p)}
+                  className="grid h-4 w-4 place-items-center rounded-full text-slate-500 transition hover:bg-white/10 hover:text-white"
+                  title="Remove"
+                >
+                  ✕
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
 
         {/* ---- Scan error ---- */}
         <AnimatePresence>
@@ -174,11 +295,31 @@ export default function App() {
                     {graveyard.length} most abandoned files
                   </span>
                 </div>
-                <Masonry
-                  files={graveyard}
-                  onAnalyze={handleAnalyze}
-                  analyzingPath={analyzingPath}
+
+                <GraveyardToolbar
+                  ref={searchRef}
+                  search={search}
+                  setSearch={setSearch}
+                  sort={sort}
+                  setSort={setSort}
+                  risk={risk}
+                  setRisk={setRisk}
+                  counts={counts}
+                  shown={displayed.length}
+                  total={graveyard.length}
                 />
+
+                {displayed.length > 0 ? (
+                  <Masonry
+                    files={displayed}
+                    onAnalyze={handleAnalyze}
+                    analyzingPath={analyzingPath}
+                  />
+                ) : (
+                  <div className="rounded-2xl bg-black/30 p-8 text-center text-sm text-slate-400 ring-1 ring-white/10">
+                    No files match your filters.
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -190,7 +331,7 @@ export default function App() {
         )}
       </div>
 
-      {/* ---- Modals ---- */}
+      {/* ---- Modals + toasts ---- */}
       <SettingsModal
         open={settingsOpen}
         settings={settings}
@@ -201,7 +342,9 @@ export default function App() {
         open={!!report}
         state={report}
         onClose={() => setReport(null)}
+        notify={addToast}
       />
+      <Toasts toasts={toasts} onDismiss={dismissToast} />
     </div>
   );
 }
@@ -215,18 +358,18 @@ function EmptyState({ onOpenSettings }) {
       transition={{ delay: 0.1 }}
       className="mt-16 flex flex-col items-center text-center"
     >
-      <div className="animate-float text-6xl">🏺</div>
+      <div className="animate-float text-6xl">🛰️</div>
       <h2 className="mt-6 max-w-xl text-2xl font-bold text-slate-100">
         Every repo has buried history.
       </h2>
       <p className="mt-3 max-w-md text-sm text-slate-400">
-        Point Code Archaeologist at a local git repository and it surfaces the
-        files no one has touched in ages — ranked by how risky they are to
-        revive. Then let any AI model you like explain what each one was for.
+        Point OmniTrace at a local git repository and it surfaces the files no
+        one has touched in ages — ranked by how risky they are to revive. Then
+        let any AI model you like explain what each one was for.
       </p>
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs text-slate-400">
         <Step n="1" text="Paste a repo path above" />
-        <Step n="2" text="Hit Excavate" />
+        <Step n="2" text="Hit Trace" />
         <button
           onClick={onOpenSettings}
           className="rounded-full bg-white/5 px-3 py-1.5 ring-1 ring-violet-400/30 transition hover:bg-violet-500/20 hover:text-white"

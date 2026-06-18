@@ -108,7 +108,7 @@ export function defaultSettings() {
   };
 }
 
-const STORAGE_KEY = "code-archaeologist.settings";
+const STORAGE_KEY = "omnitrace.settings";
 
 /**
  * Load settings from localStorage, falling back to sane defaults.

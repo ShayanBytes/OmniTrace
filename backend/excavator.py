@@ -1,7 +1,7 @@
 """
 excavator.py
 ------------
-The "digging" layer of Code Archaeologist (backend version).
+The "digging" layer of OmniTrace (backend version).
 
 Two jobs:
   1. Find the most "abandoned" files in a git repo (longest time

@@ -6,12 +6,48 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { splitPath } from "../utils.js";
 
-export default function ReportModal({ open, state, onClose }) {
+export default function ReportModal({ open, state, onClose, notify }) {
   const [showCode, setShowCode] = useState(false);
 
   // `state` = { file, loading, error, report, commit_messages, code }
   const file = state?.file;
   const { name } = file ? splitPath(file.path) : { name: "" };
+
+  const ready = state && !state.loading && !state.error && state.report;
+
+  // Assemble a tidy Markdown version of the report for copy/download.
+  function buildMarkdown() {
+    const lines = [
+      `# Archaeology report — ${file?.path || ""}`,
+      "",
+      state?.report || "",
+    ];
+    if (state?.commit_messages?.length) {
+      lines.push("", "## Recent commits");
+      state.commit_messages.forEach((m, i) => lines.push(`${i + 1}. ${m}`));
+    }
+    return lines.join("\n");
+  }
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(buildMarkdown());
+      notify?.("Report copied to clipboard", "success");
+    } catch {
+      notify?.("Couldn't access the clipboard", "error");
+    }
+  }
+
+  function handleDownload() {
+    const blob = new Blob([buildMarkdown()], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${name || "report"}.archaeology.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+    notify?.("Report downloaded", "success");
+  }
 
   return (
     <AnimatePresence>
@@ -45,12 +81,38 @@ export default function ReportModal({ open, state, onClose }) {
                 </h2>
                 <p className="truncate text-[11px] text-slate-500">{file?.path}</p>
               </div>
-              <button
-                onClick={onClose}
-                className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-slate-400 ring-1 ring-white/10 transition hover:bg-white/10 hover:text-white"
-              >
-                ✕
-              </button>
+              <div className="flex shrink-0 items-center gap-1.5">
+                {ready && (
+                  <>
+                    <button
+                      onClick={handleCopy}
+                      title="Copy report as Markdown"
+                      className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 ring-1 ring-white/10 transition hover:bg-white/10 hover:text-white"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="9" y="9" width="12" height="12" rx="2" />
+                        <path d="M5 15V5a2 2 0 0 1 2-2h10" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={handleDownload}
+                      title="Download report (.md)"
+                      className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 ring-1 ring-white/10 transition hover:bg-white/10 hover:text-white"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 3v12m0 0 4-4m-4 4-4-4" />
+                        <path d="M5 21h14" />
+                      </svg>
+                    </button>
+                  </>
+                )}
+                <button
+                  onClick={onClose}
+                  className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 ring-1 ring-white/10 transition hover:bg-white/10 hover:text-white"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
 
             {/* Body */}

@@ -17,14 +17,22 @@ export function timeAgo(isoString) {
 }
 
 /**
- * Combine "how abandoned" (days idle) with "how scary" (complexity) into a
- * single risk bucket that drives a card's accent color. Old + complex = the
- * stuff most likely to bite you, so it glows red.
+ * Numeric 0–4 risk score combining "how abandoned" (days idle) with
+ * "how scary" (complexity). Exposed on its own so the grid can sort by it.
  */
-export function riskLevel(file) {
+export function riskScore(file) {
   const idle = file.days_idle || 0;
   const cx = file.max_complexity || 0;
-  const score = Math.min(idle / 365, 2) + Math.min(cx / 15, 2);
+  return Math.min(idle / 365, 2) + Math.min(cx / 15, 2);
+}
+
+/**
+ * Combine "how abandoned" with "how scary" into a single risk bucket that
+ * drives a card's accent color. Old + complex = the stuff most likely to
+ * bite you, so it glows red.
+ */
+export function riskLevel(file) {
+  const score = riskScore(file);
 
   if (score >= 2.4)
     return {

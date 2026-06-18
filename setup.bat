@@ -1,6 +1,6 @@
 @echo off
 REM ===========================================================================
-REM  Code Archaeologist - One-Click Setup for Windows
+REM  OmniTrace (legacy Streamlit prototype) - One-Click Setup for Windows
 REM ---------------------------------------------------------------------------
 REM  This script walks you through getting the app running:
 REM    1. Reminds you to install Ollama (the local AI engine).
@@ -14,7 +14,7 @@ REM ===========================================================================
 
 echo.
 echo ==========================================================
-echo            CODE ARCHAEOLOGIST - SETUP
+echo                 OMNITRACE - SETUP
 echo ==========================================================
 echo.
 
@@ -78,7 +78,7 @@ echo   [OK] All libraries installed.
 echo.
 
 REM --- Step 5: Launch the app -----------------------------------------------
-echo [STEP 5 of 5] Launching Code Archaeologist...
+echo [STEP 5 of 5] Launching OmniTrace...
 echo.
 echo   The dashboard will open in your web browser shortly.
 echo   To stop the app later, come back to this window and press Ctrl+C.
