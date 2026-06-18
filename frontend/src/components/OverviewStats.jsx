@@ -8,9 +8,9 @@ function StatTile({ label, value, hint, delay }) {
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.4, ease: "easeOut" }}
-      className="glass rounded-2xl p-4"
+      className="glass rounded-2xl p-4 transition-shadow hover:shadow-card"
     >
-      <div className="text-2xl font-bold text-gradient sm:text-3xl">{value}</div>
+      <div className="font-display text-2xl text-gradient sm:text-3xl">{value}</div>
       <div className="mt-1 text-xs font-medium uppercase tracking-wide text-slate-400">
         {label}
       </div>

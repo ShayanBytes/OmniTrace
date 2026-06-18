@@ -38,7 +38,7 @@ export default function ScanBar({
             onChange={(e) => setRepoPath(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Paste a local git repo path…  e.g.  C:\\Users\\you\\projects\\my-app"
-            className="w-full rounded-xl bg-black/40 py-3 pl-11 pr-4 text-sm text-slate-100 placeholder-slate-500 outline-none ring-1 ring-white/10 transition focus:ring-2 focus:ring-violet-400/70"
+            className="w-full rounded-xl bg-black/40 py-3 pl-11 pr-4 text-sm text-slate-100 placeholder-slate-500 outline-none ring-1 ring-white/10 transition focus:ring-2 focus:ring-excav-violet/70"
           />
         </div>
 
@@ -48,7 +48,7 @@ export default function ScanBar({
             value={topN}
             onChange={(e) => setTopN(Number(e.target.value))}
             title="How many abandoned files to surface"
-            className="rounded-xl bg-black/40 px-2.5 py-3 text-xs text-slate-200 outline-none ring-1 ring-white/10 transition focus:ring-2 focus:ring-violet-400/70"
+            className="rounded-xl bg-black/40 px-2.5 py-3 text-xs text-slate-200 outline-none ring-1 ring-white/10 transition focus:ring-2 focus:ring-excav-violet/70"
           >
             {[8, 12, 20, 30, 50].map((n) => (
               <option key={n} value={n} className="bg-slate-900">
@@ -60,10 +60,10 @@ export default function ScanBar({
           {/* Provider chip → opens settings */}
           <button
             onClick={onOpenSettings}
-            className="group flex items-center gap-2 rounded-xl bg-black/40 px-3 py-3 text-left text-xs ring-1 ring-white/10 transition hover:ring-violet-400/60"
+            className="group flex items-center gap-2 rounded-xl bg-black/40 px-3 py-3 text-left text-xs ring-1 ring-white/10 transition hover:ring-excav-violet/60"
             title="AI provider settings"
           >
-            <span className="grid h-7 w-7 place-items-center rounded-lg bg-violet-500/20 text-violet-200">
+            <span className="grid h-7 w-7 place-items-center rounded-lg bg-excav-violet/20 text-violet-200">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="3" />
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
@@ -84,7 +84,7 @@ export default function ScanBar({
             whileTap={{ scale: 0.96 }}
             onClick={onScan}
             disabled={scanning || !repoPath.trim()}
-            className="relative overflow-hidden rounded-xl bg-gradient-to-r from-violet-500 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-900/40 transition disabled:cursor-not-allowed disabled:opacity-50"
+            className="relative overflow-hidden rounded-xl bg-gradient-to-r from-excav-violet to-excav-violetBright px-5 py-3 text-sm font-semibold text-white shadow-cta ring-1 ring-white/15 transition disabled:cursor-not-allowed disabled:opacity-50"
           >
             <span className="relative z-10">
               {scanning ? "Tracing…" : "Trace"}

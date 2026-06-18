@@ -37,7 +37,7 @@ const GraveyardToolbar = forwardRef(function GraveyardToolbar(
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Filter files…  (press /)"
-          className="w-full rounded-xl bg-black/40 py-2 pl-9 pr-8 text-sm text-slate-100 placeholder-slate-500 outline-none ring-1 ring-white/10 transition focus:ring-2 focus:ring-violet-400/70"
+          className="w-full rounded-xl bg-black/40 py-2 pl-9 pr-8 text-sm text-slate-100 placeholder-slate-500 outline-none ring-1 ring-white/10 transition focus:ring-2 focus:ring-excav-violet/70"
         />
         {search && (
           <button
@@ -62,7 +62,7 @@ const GraveyardToolbar = forwardRef(function GraveyardToolbar(
                 onClick={() => setRisk(c.id)}
                 className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs ring-1 transition ${
                   active
-                    ? "bg-violet-500/20 text-slate-100 ring-violet-400/70"
+                    ? "bg-excav-violet/20 text-slate-100 ring-excav-violet/70"
                     : "bg-black/30 text-slate-400 ring-white/10 hover:ring-white/25"
                 }`}
               >
@@ -78,7 +78,7 @@ const GraveyardToolbar = forwardRef(function GraveyardToolbar(
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          className="rounded-xl bg-black/40 px-3 py-2 text-xs text-slate-200 outline-none ring-1 ring-white/10 transition focus:ring-2 focus:ring-violet-400/70"
+          className="rounded-xl bg-black/40 px-3 py-2 text-xs text-slate-200 outline-none ring-1 ring-white/10 transition focus:ring-2 focus:ring-excav-violet/70"
         >
           {SORTS.map((s) => (
             <option key={s.id} value={s.id} className="bg-slate-900">

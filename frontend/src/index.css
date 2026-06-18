@@ -4,9 +4,11 @@
 
 /* ---------------------------------------------------------------------------
    Global look & feel
-   A dark, "deep excavation" theme: near-black slate background with violet
-   and cyan accents. Most color work is done with Tailwind utilities in the
-   components; this file only holds the things Tailwind can't express cleanly.
+   Ports the "AI Startup" Figma design system onto OmniTrace: a near-black
+   canvas, a focused violet accent, white→light-purple gradient headings and
+   a glassmorphism treatment (inset white glow + backdrop blur). Most color
+   work is done with Tailwind utilities in the components; this file only holds
+   the things Tailwind can't express cleanly.
 --------------------------------------------------------------------------- */
 :root {
   color-scheme: dark;
@@ -20,12 +22,30 @@ body,
 
 body {
   margin: 0;
-  background-color: #07070b;
-  color: #e8e8f0;
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif;
+  /* Near-black with a faint violet wash toward the top, like the Figma hero. */
+  background-color: #040308;
+  background-image: radial-gradient(
+    120% 80% at 50% -10%,
+    rgba(96, 42, 154, 0.22) 0%,
+    rgba(4, 3, 8, 0) 60%
+  );
+  background-attachment: fixed;
+  color: #ece9f5;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  font-feature-settings: "cv11", "ss01";
+  letter-spacing: -0.0001em;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
+}
+
+/* Display headings (the wordmark, hero, stat values) follow the Figma type
+   ramp: Inter Medium with tight negative tracking. */
+.font-display {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.015em;
 }
 
 /* A faint dotted "dig grid" behind everything for depth. */
@@ -34,10 +54,10 @@ body::before {
   position: fixed;
   inset: 0;
   background-image: radial-gradient(
-    rgba(148, 130, 255, 0.06) 1px,
+    rgba(140, 69, 255, 0.05) 1px,
     transparent 1px
   );
-  background-size: 26px 26px;
+  background-size: 28px 28px;
   pointer-events: none;
   z-index: 0;
 }
@@ -51,31 +71,45 @@ body::before {
   background: transparent;
 }
 *::-webkit-scrollbar-thumb {
-  background: rgba(139, 122, 255, 0.25);
+  background: rgba(140, 69, 255, 0.28);
   border-radius: 9999px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(139, 122, 255, 0.45);
+  background: rgba(152, 85, 255, 0.5);
   background-clip: content-box;
 }
 
-/* Glass panel used by cards, modals and the toolbar. */
+/* Glass panel used by cards, modals and the toolbar.
+   Figma treatment: dark violet-tinted fill, soft backdrop blur and a faint
+   inset white highlight along the top edge. */
 .glass {
   background: linear-gradient(
     180deg,
-    rgba(30, 27, 50, 0.72),
-    rgba(16, 14, 28, 0.72)
+    rgba(25, 16, 43, 0.72),
+    rgba(10, 7, 20, 0.78)
   );
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(140, 125, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
 }
 
-/* Gradient text used for headings and the wordmark. */
+/* The brighter, "lit from within" glass used for primary CTAs / highlighted
+   surfaces — mirrors the Figma button effect (inset white glow + blur). */
+.glass-bright {
+  background: rgba(140, 69, 255, 0.18);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 0 6px 3px rgba(255, 255, 255, 0.18);
+}
+
+/* Gradient text used for headings and the wordmark.
+   Figma signature: white fading into light purple. */
 .text-gradient {
-  background: linear-gradient(90deg, #c4b5fd, #67e8f9 60%, #f0abfc);
+  background: linear-gradient(180deg, #ffffff 52%, #b372cf 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -93,6 +127,6 @@ body::before {
   .input {
     @apply w-full rounded-xl bg-black/40 px-3 py-2.5 text-sm text-slate-100
       placeholder-slate-500 outline-none ring-1 ring-white/10 transition
-      focus:ring-2 focus:ring-violet-400/70;
+      focus:ring-2 focus:ring-excav-violet/70;
   }
 }

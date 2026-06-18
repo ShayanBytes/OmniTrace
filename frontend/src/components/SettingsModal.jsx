@@ -80,7 +80,7 @@ export default function SettingsModal({ open, settings, onClose, onSave }) {
                     onClick={() => pickProvider(p.id)}
                     className={`rounded-xl p-3 text-left ring-1 transition ${
                       active
-                        ? "bg-violet-500/20 ring-violet-400/70"
+                        ? "bg-excav-violet/20 ring-excav-violet/70"
                         : "bg-black/30 ring-white/10 hover:ring-white/25"
                     }`}
                   >
@@ -177,7 +177,7 @@ export default function SettingsModal({ open, settings, onClose, onSave }) {
               </button>
               <button
                 onClick={() => onSave(draft)}
-                className="rounded-xl bg-gradient-to-r from-violet-500 to-cyan-500 px-5 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+                className="rounded-xl bg-gradient-to-r from-excav-violet to-excav-violetBright px-5 py-2 text-sm font-semibold text-white ring-1 ring-white/15 transition hover:opacity-90"
               >
                 Save
               </button>
